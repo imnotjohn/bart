@@ -6,19 +6,20 @@
  *
  */
  
- // Size of Cells
- int dotSize = 7;
- 
+ int dotSize = 7;  // Size of Cells
  color dotOn = color(255, 20, 20);
  color dotOff = color(20, 20, 20);
+ color PGRAPHICS_COLOR = color(255, 255, 255); // font color that pgraphics reacts to
  
- // Array of Cells
- int[][] dotsArray;
- // Buffer to record state of the dots
- int[][] dotsBuffer;
+ PGraphics pg;
  
- int w; //screen width
- int h; //screen height
+ int[][] dotsArray;  // Array of Cells
+ int[][] dotsBuffer;  // Buffer to record state of the dots
+ 
+ int w; //screen width variable
+ int h; //screen height variable
+ int gridHorizontal;
+ int gridVertical;
  
  void setup() {
    size(960, 540);
@@ -26,17 +27,17 @@
    w = width - 30;
    h = height - 30;
  
+   gridHorizontal = w/dotSize;
+   gridVertical = h/dotSize;
+   
    dotsArray = new int[w/dotSize][h/dotSize];
    dotsBuffer = new int[w/dotSize][h/dotSize]; 
-   
-   // Stroke to draw background grid
-   //stroke(20,20,20);
    
    noSmooth();
    
    // Initialization of Dots
-   for (int x = 0; x < w/dotSize; x++) {
-     for (int y = 0; y < h/dotSize; y++) {
+   for (int x = 0; x < gridHorizontal; x++) {
+     for (int y = 0; y < gridVertical; y++) {
        float state = random(100);
        if (state > 40) {
          state = 0;  
@@ -48,17 +49,33 @@
        dotsArray[x][y] = int(state); 
      }
    }
-   background(20,20,40); // What happens w/ this deleted?
+   background(20,20,40); // sets bg color
+   
+   pg = createGraphics(width, height, JAVA2D);
+   pg.beginDraw();
+   pg.textSize(250);
+   pg.textAlign(CENTER, CENTER);
+   pg.fill(PGRAPHICS_COLOR);
+   pg.text("Ashby", pg.width/2, pg.height/2);
+   pg.endDraw();
+   
+   imageMode(CENTER);
  }
  
  void draw() {
    // Draw Grid
-   for (int x=0; x<w/dotSize; x++) {
-     for (int y=0; y<h/dotSize; y++) {
-       if (dotsArray[x][y] == 1) {
-         fill(dotOn); // If alive  
+   float test_w = float(width)/gridHorizontal;
+   float test_h = float(height)/gridVertical;
+   
+   for (int x=0; x < gridHorizontal; x++) {
+     for (int y=0; y < gridVertical; y++) {
+       color c = pg.get(int(x*test_w), int(y*test_h)); //test
+       //println(c);
+       boolean textDrawn = (c == PGRAPHICS_COLOR); //test
+       if (dotsArray[x][y] == 1 || textDrawn) {
+         fill(dotOn); // "on" state  
        } else {
-         fill(dotOff);  
+         fill(dotOff);  // "off" state
        }
        ellipse(x*dotSize + 20, y*dotSize + 20, dotSize/2, dotSize/2);
      }
