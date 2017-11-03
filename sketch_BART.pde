@@ -3,15 +3,20 @@
  *
  * Iteration 1: Displays dot-matrix / LED content like BART station signs
  * Iteration 2: Turn "on" when inText == True: "off " when inText == False
+ * Iteration 3: Add ControlP5 GUI
+ *
  *
  */
  
- int dotSize = 7;  // Size of Cells
+ import controlP5.*;
+ 
+ int dotSize = 6;  // Size of Cells
  color dotOn = color(255, 20, 20);
  color dotOff = color(20, 20, 20);
  color PGRAPHICS_COLOR = color(255, 255, 255); // font color that pgraphics reacts to
  
  PGraphics pg;
+ ControlP5 cp5;
  
  int[][] dotsArray;  // Array of Cells
  int[][] dotsBuffer;  // Buffer to record state of the dots
@@ -23,6 +28,23 @@
  
  void setup() {
    size(960, 540);
+   
+   cp5 = new ControlP5(this);
+   Group location = cp5.addGroup("location")
+                       .setPosition(100,100)
+                       .setBackgroundHeight(150)
+                       .setBackgroundColor(color(255, 50))
+                       ;
+   cp5.addBang("San Francisco")
+      .setPosition(10,20)
+      .setSize(45,20)
+      .setGroup(location)
+      ;
+   cp5.addBang("Oakland")
+      .setPosition(10,20)
+      .setSize(45,20)
+      .setGroup(location)
+      ;
    
    w = width - 30;
    h = height - 30;
@@ -56,7 +78,9 @@
    pg.textSize(250);
    pg.textAlign(CENTER, CENTER);
    pg.fill(PGRAPHICS_COLOR);
-   pg.text("Ashby", pg.width/2, pg.height/2);
+   pg.text("hello\n", pg.width/2, pg.height/2);
+   pg.textSize(125);
+   pg.text("good bye", pg.width/2, pg.height/2);
    pg.endDraw();
    
    imageMode(CENTER);
@@ -72,7 +96,8 @@
        color c = pg.get(int(x*test_w), int(y*test_h)); //test
        //println(c);
        boolean textDrawn = (c == PGRAPHICS_COLOR); //test
-       if (dotsArray[x][y] == 1 || textDrawn) {
+       //if (dotsArray[x][y] == 1 || textDrawn) {
+         if (textDrawn) {
          fill(dotOn); // "on" state  
        } else {
          fill(dotOff);  // "off" state
